@@ -1,56 +1,58 @@
 import React, { useEffect, useState } from "react";
+import { useDispatch } from "react-redux/es/exports";
+import { useSelector } from "react-redux/es/hooks/useSelector";
+import {
+  convertCurrency,
+  getConversionData,
+} from "../redux/features/FormSlice";
 import "./form.scss";
+import {
+  setAmount,
+  setBaseCurr,
+  setConversionData,
+  setConvertedAmount,
+  setToCurr,
+} from "../redux/features/FormSlice";
 interface Props {
   leftList: string[];
   rightList: string[];
-  // setTodos:React.Dispatch<React.SetStateAction<Todo[]>>;
 }
 const Form: React.FC<Props> = ({ leftList, rightList }) => {
-  const [baseCurr, setBaseCurr] = useState<string>("EUR");
-  const [toConvertCurr, setToConvertCurr] = useState<string>("USD");
-  const [amount, setAmount] = useState<number>(0);
-  const [convertedAmount, setConvertedAmount] = useState<number | null>(0);
-  const [conversionData, setConversionData] = useState<number | null>(1.061098);
+  const formState: any = useSelector<any>(
+    (state: { formData: {} }) => state.formData
+  );
+  console.log("====================================");
+  console.log(formState);
+  console.log("====================================");
+  const dispatch = useDispatch<any>();
 
   useEffect(() => {
-    setConversionData(null);
-    //API call for default baseCurr and toCurr
-    setTimeout(() => {
-      setConversionData(1.06); //data received from API
-    }, 300);
-  }, [baseCurr, toConvertCurr]);
+    console.log("useEffect Called");
+
+    dispatch(setConversionData(null));
+    dispatch(getConversionData());
+  }, [formState.baseCurr, formState.toCurr]);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
     console.log("Form Submitted", e);
-    setConvertedAmount(null);
-    //API CALL and store the response in convertedAmount state
-    setTimeout(() => {
-      setConvertedAmount(100);
-      // const formData = {
-      //   baseCurr: baseCurr,
-      //   toConvertCurr: toConvertCurr,
-      //   amount: amount,
-      //   convertedAmount: convertedAmount
-      // }
-    }, 500);
+    dispatch(convertCurrency());
   };
   const handleSwap = (): void => {
-    const temp = baseCurr;
-    setBaseCurr(toConvertCurr);
-    setToConvertCurr(temp);
+    const temp = formState.baseCurr;
+    dispatch(setBaseCurr(formState.toCurr));
+    dispatch(setToCurr(temp));
   };
   const handleBaseChange = (e: React.ChangeEvent<HTMLSelectElement>): void => {
-    setBaseCurr(e.target.value);
+    dispatch(setBaseCurr(e.target.value));
   };
   const handleToConvertChange = (
     e: React.ChangeEvent<HTMLSelectElement>
   ): void => {
-    setToConvertCurr(e.target.value);
+    dispatch(setToCurr(e.target.value));
   };
   const handleAmount = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    console.log(e.target.value);
-    setAmount(+e.target.value); //added + sign to typecast string to number type.
+    dispatch(setAmount(+e.target.value));
   };
   return (
     <form onSubmit={handleSubmit} className="form" name="signupform">
@@ -62,15 +64,15 @@ const Form: React.FC<Props> = ({ leftList, rightList }) => {
           name="amount"
           placeholder="Enter Amount"
           onChange={(e) => handleAmount(e)}
-          value={amount}
+          value={formState.amount}
           required
         />
-        {conversionData === null ? (
+        {formState.conversionData === null ? (
           <p className="currency_value">Fetching Rates...</p>
         ) : (
           <p className="currency_value">
-            1 {baseCurr} = {conversionData}
-            {toConvertCurr}
+            1 {formState.baseCurr} = {formState.conversionData}
+            {formState.toCurr}
           </p>
         )}
       </div>
@@ -82,7 +84,7 @@ const Form: React.FC<Props> = ({ leftList, rightList }) => {
             <select
               name="baseCurr"
               onChange={(e) => handleBaseChange(e)}
-              value={baseCurr}
+              value={formState.baseCurr}
             >
               {leftList.map((ele, index) => (
                 <option key={index} value={ele}>
@@ -95,14 +97,14 @@ const Form: React.FC<Props> = ({ leftList, rightList }) => {
             onClick={handleSwap}
             className="material-symbols-outlined swap_icon"
           >
-            sync_alt
+            swan_alt
           </span>
           <div>
             <label htmlFor="baseCurr">To</label>
             <select
               name="toConvertCurr"
               onChange={(e) => handleToConvertChange(e)}
-              value={toConvertCurr}
+              value={formState.toCurr}
             >
               {rightList.map((ele, index) => (
                 <option key={index} value={ele}>
@@ -119,11 +121,11 @@ const Form: React.FC<Props> = ({ leftList, rightList }) => {
 
         <div className="converted_amount_details">
           <p>
-            {amount === 0
+            {formState.amount === 0
               ? 0
-              : convertedAmount == null
+              : formState.converting
               ? "Converting..."
-              : convertedAmount}
+              : formState.convertedAmount}
           </p>
           <button type="submit" className="more_details_btn" name="convertCurr">
             More Details
