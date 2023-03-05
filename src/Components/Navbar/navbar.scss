@@ -1,4 +1,28 @@
 .navbar{
-    height: 50px;
+    // height: 50px;
     color: white;
+    padding: 20px;
+    // background-color: black;
+}
+.nav_list{
+    list-style: none;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin: 0;
+
+    button{
+  border: 1px solid rgba(10, 180, 180, 1);
+  background: rgba(20, 20, 20, .6);
+  font-size: 18px;
+//   width: 22%;
+  color: white;
+  padding: 5px 40px;
+  cursor: pointer;
+  transition: .4s;
+  &:hover {
+    background: rgba(20, 20, 20, .8);
+    padding: 10px 80px;
+  }
+}
 }
