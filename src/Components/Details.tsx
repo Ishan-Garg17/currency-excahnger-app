@@ -13,6 +13,7 @@ const Details: React.FC = () => {
     (state: { formData: {} }) => state.formData
   );
   const someObj: {} = symbols;
+
   useEffect(() => {
     const baseCurr: string = formState.baseCurr;
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
