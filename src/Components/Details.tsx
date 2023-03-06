@@ -19,6 +19,7 @@ const Details: React.FC = () => {
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     const fullNameofCurr = someObj[baseCurr as keyof {}];
     setFullName(fullNameofCurr);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [formState.baseCurr]);
 
   return (
