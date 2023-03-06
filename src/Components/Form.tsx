@@ -27,11 +27,8 @@ const Form: React.FC<Props> = ({ leftList, rightList, moreDetailsBtn }) => {
   const navigate = useNavigate();
   const formState = useSelector((state: RootState) => state.formData);
   const dispatch = useDispatch<AppDispatch>();
-  // console.log("================The Form State is====================");
-  // console.log(formState);
 
   useEffect(() => {
-    // console.log("useEffect Called");
     dispatch(getConversionData());
   }, [dispatch, formState.baseCurr, formState.toCurr]);
 
@@ -41,7 +38,6 @@ const Form: React.FC<Props> = ({ leftList, rightList, moreDetailsBtn }) => {
       window.alert("Please enter amount");
       return;
     }
-    // console.log("Form Submitted", e);
     dispatch(convertCurrency());
     dispatch(convertTo9PopularCurrency());
   };
@@ -77,6 +73,7 @@ const Form: React.FC<Props> = ({ leftList, rightList, moreDetailsBtn }) => {
           <div>
             <label htmlFor="baseCurr">From</label>
             <select
+              disabled={formState.amount <= 0 || !moreDetailsBtn}
               name="baseCurr"
               onChange={(e) => dispatch(setBaseCurr(e.target.value))}
               value={formState.baseCurr}
@@ -88,15 +85,20 @@ const Form: React.FC<Props> = ({ leftList, rightList, moreDetailsBtn }) => {
               ))}
             </select>
           </div>
-          <span
-            onClick={() => dispatch(swapBaseAndTo())}
-            className="material-symbols-outlined swap_icon"
-          >
-            sync_alt
-          </span>
+
+          {moreDetailsBtn && (
+            <span
+              onClick={() => dispatch(swapBaseAndTo())}
+              className="material-symbols-outlined swap_icon"
+            >
+              sync_alt
+            </span>
+          )}
+
           <div>
             <label htmlFor="baseCurr">To</label>
             <select
+              disabled={formState.amount <= 0}
               name="toConvertCurr"
               onChange={(e) => dispatch(setToCurr(e.target.value))}
               value={formState.toCurr}
@@ -110,7 +112,12 @@ const Form: React.FC<Props> = ({ leftList, rightList, moreDetailsBtn }) => {
           </div>
         </div>
 
-        <button type="submit" className="btn" name="convertCurr">
+        <button
+          // disabled={formState.amount <= 0}
+          type="submit"
+          className={formState.amount > 0 ? "btn" : "btn-disabled"}
+          name="convertCurr"
+        >
           Convert
         </button>
 

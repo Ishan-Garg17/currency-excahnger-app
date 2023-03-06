@@ -1,8 +1,10 @@
 .navbar{
-    // height: 50px;
     color: white;
     padding: 20px;
-    // background-color: black;
+}
+
+.logo{
+  height: 100px;
 }
 .nav_list{
     list-style: none;
@@ -10,6 +12,7 @@
     justify-content: space-around;
     align-items: center;
     margin: 0;
+    height: 60px;
 
     button{
   border: 1px solid rgba(10, 180, 180, 1);
